@@ -1,0 +1,34 @@
+{
+  "name": "cannoneer",
+  "version": "0.0.0-SCRAP",
+  "scripts": {
+    "start": "nodemon ./bin/www",
+    "eslint": "eslint . --ext .js",
+    "create:env-file": "node bin/create-env-file"
+  },
+  "dependencies": {
+    "@koa/cors": "^2.2.1",
+    "bluebird": "^3.5.1",
+    "debug": "^3.1.0",
+    "debuggler": "^1.1.1-ALPHA",
+    "dotenv": "^5.0.1",
+    "koa": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-helmet": "^4.0.0",
+    "koa-morgan": "^1.0.1",
+    "koa-mount": "^3.0.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "split": "^1.0.1",
+    "winston": "^2.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "nodemon": "^1.17.3"
+  },
+  "engines": {
+    "node": ">=7.6.0"
+  }
+}

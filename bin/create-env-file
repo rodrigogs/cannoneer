@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-console */
+
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const Env = require('../config/env');
+
+const fileName = process.argv[2] || '.env';
+const dotenvFilePath = path.resolve(__dirname, `../${fileName}`);
+
+const program = async () => {
+  const envs = Object.getOwnPropertyNames(Env).filter(env => env === env.toUpperCase());
+
+  const fileExists = fs.existsSync(dotenvFilePath);
+  if (fileExists) {
+    const existingFile = fs.readFileSync(dotenvFilePath).toString();
+    if (!existingFile.endsWith(os.EOL)) fs.appendFileSync(dotenvFilePath, os.EOL);
+
+    existingFile
+      .split(os.EOL)
+      .filter(line => !line.startsWith('#') || !line.contains('='))
+      .map(line => line.split('=')[0])
+      .forEach((env) => {
+        const index = envs.indexOf(env);
+        if (index !== -1) delete envs[index];
+      });
+  }
+
+  envs.forEach((env) => {
+    const defaultValue = Env[env] || '';
+    fs.appendFileSync(dotenvFilePath, `${env}=${defaultValue}${os.EOL}`);
+  });
+};
+
+program()
+  .then(() => console.log('Done.'))
+  .catch(console.error);

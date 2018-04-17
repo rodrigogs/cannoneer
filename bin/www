@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+const { logger, Env } = require('../config');
+const debug = require('debuggler')();
+const app = require('../src');
+
+debug('starting HTTP instance');
+
+const start = () => new Promise(async (resolve, reject) => {
+  try {
+    const instance = await app();
+
+    instance.listen(Env.PORT, (err) => {
+      if (err) return reject(err);
+      resolve(instance);
+    })
+      .on('error', reject);
+  } catch (err) {
+    reject(err);
+  }
+});
+
+start()
+  .then(() => logger.info('Application running on port', Env.PORT))
+  .catch((err) => {
+    logger.error('Application crashed:', err);
+    process.exit(1);
+  });
