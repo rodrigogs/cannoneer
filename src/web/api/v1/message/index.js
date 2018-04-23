@@ -1,1 +1,1 @@
-module.exports = require('./message.api.v1.controller');
+module.exports = require('./message.api.v1.router');

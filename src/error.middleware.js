@@ -1,21 +1,26 @@
 const debug = require('debuggler');
 const Env = require('../config/env');
 
+const badRequest = (ctx, err) => {
+  ctx.status = 400;
+  ctx.body = { name: err.name, message: err.message };
+};
+
 const notFound = (ctx) => {
   ctx.status = 404;
   ctx.body = {
+    name: 'NotFoundError',
     message: 'Not Found',
   };
 };
 
 const internalError = (ctx, err) => {
-  if (Env.NODE_ENV === 'production') delete err.stack;
-
   ctx.status = 500;
-  ctx.body = err;
+  ctx.body = { name: err.name, message: err.message };
 };
 
 const hanldle = code => ({
+  400: badRequest,
   404: notFound,
   500: internalError,
 }[code || 500]);

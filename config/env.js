@@ -65,6 +65,13 @@ class Env {
   static get MONGO_URL() {
     return process.env.MONGO_URL || 'mongodb://localhost:27017/cannoneer';
   }
+
+  /**
+   * @return {String}
+   */
+  static get MESSAGE_PROCESSOR_CRON() {
+    return process.env.MESSAGE_PROCESSOR_CRON;
+  }
 }
 
 module.exports = Env;

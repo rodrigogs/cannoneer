@@ -7,9 +7,13 @@ const router = new Router();
 
 debug('configuring routes');
 
-router.all('/', graphqlHTTP({
+const message = require('./message');
+
+router.all('/graphql', graphqlHTTP({
   schema: ApiSchema,
   graphiql: true,
 }));
+
+router.use('/message', message.routes(), message.allowedMethods());
 
 module.exports = router;

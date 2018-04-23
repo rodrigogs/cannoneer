@@ -20,19 +20,23 @@ const errorMiddleware = require('./error.middleware');
 const bootstrap = async () => {
   debug('bootstrapping application');
 
+  require('./workers');
+
   const app = new Koa();
   app.use(errorMiddleware());
   app.use(helmet());
   app.use(cors());
   app.use(morgan(Env.HTTP_LOG_CONFIG, { stream: logger.stream }));
-  app.use(bodyParser());
+  app.use(bodyParser({
+    jsonLimit: '10mb',
+  }));
 
   const router = require('./web');
   app.use(router.routes());
   app.use(router.allowedMethods());
 
   await redis.waitForReady();
-  await mongoose();
+  // await mongoose(); TODO reestabelecer no futuro
 
   return app;
 };
