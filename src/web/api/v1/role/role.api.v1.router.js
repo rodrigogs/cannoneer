@@ -1,12 +1,11 @@
 const debug = require('debuggler')();
 const Router = require('koa-router');
+const RoleController = require('./role.api.v1.controller');
 
 const router = new Router();
 
 debug('configuring routes');
 
-const v1 = require('./v1');
-
-router.use('/v1', v1.routes(), v1.allowedMethods());
+router.get('/', RoleController.get);
 
 module.exports = router;

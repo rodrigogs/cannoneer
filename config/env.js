@@ -43,6 +43,35 @@ class Env {
   static get HTTP_LOG_CONFIG() {
     return process.env.HTTP_LOG_CONFIG || 'dev';
   }
+
+  /**
+   * Redis connection string.
+   *
+   * @see http://www.iana.org/assignments/uri-schemes/prov/redis
+   * @default 'redis://localhost:6379'
+   * @return {String}
+   */
+  static get REDIS_URL() {
+    return process.env.REDIS_URL || 'redis://localhost:6379';
+  }
+
+  /**
+   * Redis connection string.
+   *
+   * @see https://www.iana.org/assignments/uri-schemes/prov/mongodb
+   * @default 'mongodb://localhost:27017/cannoneer'
+   * @return {String}
+   */
+  static get MONGO_URL() {
+    return process.env.MONGO_URL || 'mongodb://localhost:27017/cannoneer';
+  }
+
+  /**
+   * @return {String}
+   */
+  static get MESSAGE_PROCESSOR_CRON() {
+    return process.env.MESSAGE_PROCESSOR_CRON;
+  }
 }
 
 module.exports = Env;
