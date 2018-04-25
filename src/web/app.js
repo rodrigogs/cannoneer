@@ -1,9 +1,9 @@
 const {
-  Env,
   logger,
   redis,
   mongoose,
-} = require('../config');
+  Env,
+} = require('../../config');
 const debug = require('debuggler')();
 const Koa = require('koa');
 const helmet = require('koa-helmet');
@@ -20,8 +20,6 @@ const errorMiddleware = require('./error.middleware');
 const bootstrap = async () => {
   debug('bootstrapping application');
 
-  require('./workers');
-
   const app = new Koa();
   app.use(errorMiddleware());
   app.use(helmet());
@@ -31,7 +29,7 @@ const bootstrap = async () => {
     jsonLimit: '10mb',
   }));
 
-  const router = require('./web');
+  const router = require('./router');
   app.use(router.routes());
   app.use(router.allowedMethods());
 

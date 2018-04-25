@@ -18,7 +18,10 @@ const MessageController = {
   /**
    */
   cancel: async (ctx) => {
-    ctx.throw(501, 'Not Implemented');
+    const { id } = ctx.params;
+
+    await MessageService.cancel(id);
+    ctx.status = 204;
   },
 };
 

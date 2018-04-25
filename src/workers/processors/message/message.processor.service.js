@@ -21,12 +21,15 @@ const MessageProcessorService = {
   },
 
   /**
-   * @return {Promise<void>}
+   * @param {Number} page
+   * @param {Number} limit
+   * @return {Promise<Object>}
    */
-  processMessages: async () => {
-    const messageKeys = await redis.keysAsync('failed_message_*');
+  getPaginatedMessages: async (page = 0, limit = 10) => {
+    const [cursor, keys] = await redis
+      .scanAsync(String(page), 'MATCH', 'messages:failed*', 'COUNT', String(limit));
 
-    const msgPromises = messageKeys.map(async (key) => {
+    const messagePromises = keys.map(async (key) => {
       let msg = await redis.getAsync(key);
       msg = JSON.parse(msg);
       msg.key = key;
@@ -34,20 +37,37 @@ const MessageProcessorService = {
       return msg;
     });
 
-    await Promise.each(msgPromises, async (message) => {
-      const {
-        id,
-        url,
-        key,
-      } = message;
+    const messages = await Promise.all(messagePromises);
+    return { cursor, messages };
+  },
 
-      try {
-        await MessageService.deliverMessage(id, url, message);
-        await MessageProcessorService.removeFromMemory(key);
-      } catch (err) {
-        logger.error(`Failed to deliver message "${id}" with error:`, err)
+  /**
+   * @return {Promise<void>}
+   */
+  processMessages: async (cursor = 0) => {
+    const { cursor: next, messages: page } = await MessageProcessorService
+      .getPaginatedMessages(cursor);
+
+    try {
+      await Promise.each(page, async (message) => {
+        const {
+          id,
+          url,
+          key,
+        } = message;
+
+        try {
+          await MessageService.deliverMessage(id, url, message);
+          await MessageProcessorService.removeFromMemory(key);
+        } catch (err) {
+          logger.error(`Failed to deliver message "${id}" with error:`, err.message);
+        }
+      });
+    } finally {
+      if (next !== '0') {
+        await MessageProcessorService.processMessages(next);
       }
-    });
+    }
   },
 };
 

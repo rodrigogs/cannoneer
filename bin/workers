@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+const { logger, Promise } = require('../config');
+const debug = require('debuggler')();
+const workers = require('../src/workers');
+
+debug('starting workers');
+
+const start = () => Promise.all(workers.map(async (worker) => {
+  await worker.setup();
+  worker.job.start();
+}));
+
+start()
+  .then(() => logger.info('Workers running'))
+  .catch((err) => {
+    logger.error('Application crashed:', err);
+    process.exit(1);
+  });

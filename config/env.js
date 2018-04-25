@@ -1,4 +1,7 @@
 const path = require('path');
+const { ObjectId } = require('mongoose').Types;
+
+const INSTANCE_ID = new ObjectId();
 
 /**
 * @see https://github.com/motdotla/dotenv#usage
@@ -31,6 +34,20 @@ class Env {
    */
   static get PORT() {
     return process.env.PORT ? Number(process.env.PORT) : 3000;
+  }
+
+  /**
+   * Application's context.
+   *
+   * 'all' enables all contexts
+   * 'server' enables http server
+   * 'message-worker' enables MessageWorker
+   *
+   * @default 'all'
+   * @return {String}
+   */
+  static get CONTEXTS() {
+    return process.env.CONTEXTS || 'all';
   }
 
   /**
@@ -67,10 +84,37 @@ class Env {
   }
 
   /**
+   * @default 1
+   * @return {Number}
+   */
+  static get SERVER_CORES() {
+    return Number.isNaN(process.env.SERVER_CORES)
+      ? 0
+      : Number(process.env.SERVER_CORES);
+  }
+
+  /**
    * @return {String}
    */
   static get MESSAGE_PROCESSOR_CRON() {
     return process.env.MESSAGE_PROCESSOR_CRON;
+  }
+
+  /**
+   * @default 1
+   * @return {Number}
+   */
+  static get MESSAGE_PROCESSOR_CORES() {
+    return Number.isNaN(process.env.MESSAGE_PROCESSOR_CORES)
+      ? 0
+      : Number(process.env.MESSAGE_PROCESSOR_CORES);
+  }
+
+  /**
+   * @return {String}
+   */
+  static get INSTANCE_ID() {
+    return INSTANCE_ID;
   }
 }
 
