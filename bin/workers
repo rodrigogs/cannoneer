@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require('../config/env');
+
 const { logger, Promise } = require('../config');
 const debug = require('debuggler')();
 const workers = require('../src/workers');

@@ -1,5 +1,5 @@
-const debug = require('debuggler')();
 const Env = require('../../config/env');
+const debug = require('debuggler')();
 
 debug('configuring workers');
 

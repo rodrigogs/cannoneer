@@ -111,6 +111,18 @@ class Env {
   }
 
   /**
+   * Message processor lifetime in millis.
+   *
+   * @default null
+   * @return {Number}
+   */
+  static get MESSAGE_PROCESSOR_LIFETIME() {
+    return Number.isNaN(process.env.MESSAGE_PROCESSOR_LIFETIME)
+      ? null
+      : Number(process.env.MESSAGE_PROCESSOR_LIFETIME);
+  }
+
+  /**
    * @return {String}
    */
   static get INSTANCE_ID() {

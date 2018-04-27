@@ -13,8 +13,7 @@ const start = () => new Promise(async (resolve, reject) => {
     instance.listen(Env.PORT, (err) => {
       if (err) return reject(err);
       resolve(instance);
-    })
-      .on('error', reject);
+    }).on('error', reject);
   } catch (err) {
     reject(err);
   }

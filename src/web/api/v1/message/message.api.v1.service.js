@@ -17,7 +17,6 @@ const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
 const MessageService = {
   /**
    * Creates a unique key for a message.
-   * Use worker: 'random' to assign it to a random worker.
    *
    * @param {Object} options
    * @param {String} options.worker Worker to assign the message
@@ -25,13 +24,8 @@ const MessageService = {
    * @param {String} options.url Message url
    * @return {string}
    */
-  getMessageKey: ({ worker = '*', id = '*', url = '*' }) => {
-    if (worker === 'random') {
-      const workers = redis.keysAsync('msgwrkr:instance:*').map(redis.getAsync);
-      worker = workers[getRandomInt(workers.length - 1)];
-    }
-
-    return `msgwrkr:${worker}:failed:id:${id}:url:${url}`;
+  getMessageKey: ({ worker = '*', id = '*', url = '*' } = {}) => {
+    return `msgwrkr:msg:${worker}:failed:id:${id}:url:${url}`;
   },
 
   /**
@@ -91,10 +85,19 @@ const MessageService = {
       logger.error(`Failed to send message to "${url}" with error`, err.message);
 
       try {
+        const availableWorkers = await redis.keysAsync('msgwrkr:instance:*')
+          .map(key => redis.getAsync(key))
+          .map(JSON.parse);
+
+        if (!availableWorkers.length) throw new Error('No workers available');
+        const randomWorker = availableWorkers[getRandomInt(availableWorkers.length - 1)].id;
+
+        debug(`assigning message "${id}" to worker "${randomWorker}"`);
+
         message.id = id;
         message.url = url;
         await redis.setAsync(MessageService.getMessageKey({
-          worker: 'random',
+          worker: randomWorker,
           id,
           url,
         }), JSON.stringify(message));

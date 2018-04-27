@@ -21,6 +21,15 @@ const bootstrap = async () => {
   debug('bootstrapping application');
 
   const app = new Koa();
+
+  // FIXME create auth strategy
+  app.use((ctx, next) => {
+    // if (ctx.request.headers['my-secret-header'] !== process.env.MY_SECRET_HEADER) {
+    //   ctx.throw(401);
+    // }
+    return next();
+  });
+
   app.use(errorMiddleware());
   app.use(helmet());
   app.use(cors());
