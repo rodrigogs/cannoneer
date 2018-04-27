@@ -38,12 +38,14 @@ const MessageService = {
 
     if (status) {
       if (status !== response.status) throw new InvalidResponseStatusError(status, response.status);
+      debug('valid status');
     }
 
     if (body) {
       const validate = ajv.compile(body);
       const valid = validate(response.data);
       if (!valid) throw new InvalidResponseSchemaError(validate.errors);
+      debug('valid body');
     }
   },
 
@@ -80,6 +82,7 @@ const MessageService = {
    */
   tryToSend: async (id, url, message, attempt = 0) => {
     try {
+      debug(`trying to send message "${id}" to url "${url}"`);
       await MessageService.deliverMessage(id, url, message);
     } catch (err) {
       logger.error(`Failed to send message to "${url}" with error`, err.message);
