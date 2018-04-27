@@ -76,6 +76,11 @@ const MessageProcessorService = {
       status: 'claiming',
     });
 
+    const newKey = MessageProcessorService.getWorkerKey({
+      id,
+      status: 'alive',
+    });
+
     redis.renameAsync(originalKey, claimingKey);
 
     const timeSalt = Math.floor(Math.random() * 15000) + 5000;
@@ -85,7 +90,7 @@ const MessageProcessorService = {
       throw new Error(`Could not claim worker "${id}". Another worker already assumed the job.`);
     }
 
-    return redis.renameAsync(claimingKey, originalKey);
+    return redis.renameAsync(claimingKey, newKey);
   },
 
   notSeenFor: (lastSeen, maxMillis) => {
