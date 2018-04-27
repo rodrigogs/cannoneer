@@ -1,16 +1,15 @@
 const debug = require('debuggler');
-const Env = require('../config/env');
 
 const badRequest = (ctx, err) => {
   ctx.status = 400;
   ctx.body = { name: err.name, message: err.message };
 };
 
-const notFound = (ctx) => {
+const notFound = (ctx, err) => {
   ctx.status = 404;
   ctx.body = {
-    name: 'NotFoundError',
-    message: 'Not Found',
+    name: err.name || 'NotFoundError',
+    message: err.message || 'Not Found',
   };
 };
 

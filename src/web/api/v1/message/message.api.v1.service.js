@@ -8,15 +8,32 @@ const Ajv = require('ajv');
 const InvalidMessageSchemaError = require('./exceptions/InvalidMessageSchemaError');
 const InvalidResponseStatusError = require('./exceptions/InvalidResponseStatusError');
 const InvalidResponseSchemaError = require('./exceptions/InvalidResponseSchemaError');
+const MessageNotFoundError = require('./exceptions/MessageNotFoundError');
 
 const ajv = new Ajv();
 
+const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
+
 const MessageService = {
+  /**
+   * Creates a unique key for a message.
+   *
+   * @param {Object} options
+   * @param {String} options.worker Worker to assign the message
+   * @param {String} options.id Message id
+   * @param {String} options.url Message url
+   * @return {string}
+   */
+  getMessageKey: ({ worker = '*', id = '*', url = '*' } = {}) => {
+    return `msgwrkr:msg:${worker}:failed:id:${id}:url:${url}`;
+  },
+
   /**
    * @param {Object} expected
    * @param {Object} response
    */
   validateResponse: (expected = {}, response) => {
+    debug('validating response');
     const { status, body } = expected;
 
     if (status) {
@@ -65,12 +82,25 @@ const MessageService = {
     try {
       await MessageService.deliverMessage(id, url, message);
     } catch (err) {
-      logger.error(`Failed to send message to "${url}" with error`, err);
+      logger.error(`Failed to send message to "${url}" with error`, err.message);
 
       try {
+        const availableWorkers = await redis.keysAsync('msgwrkr:instance:*')
+          .map(key => redis.getAsync(key))
+          .map(JSON.parse);
+
+        if (!availableWorkers.length) throw new Error('No workers available');
+        const randomWorker = availableWorkers[getRandomInt(availableWorkers.length - 1)].id;
+
+        debug(`assigning message "${id}" to worker "${randomWorker}"`);
+
         message.id = id;
         message.url = url;
-        await redis.setAsync(`failed_message_${id}_${url}`, JSON.stringify(message));
+        await redis.setAsync(MessageService.getMessageKey({
+          worker: randomWorker,
+          id,
+          url,
+        }), JSON.stringify(message));
       } catch (err) {
         const retryIn = Math.min(attempt * 100, 60000);
 
@@ -117,6 +147,17 @@ const MessageService = {
     }
 
     return MessageService.processMessage(message);
+  },
+
+  /**
+   * @param {String} id
+   * @return {Promise<void>}
+   */
+  cancel: async (id) => {
+    const keys = await redis.keysAsync(MessageService.getMessageKey({ id }));
+    if (keys.length !== 1) throw new MessageNotFoundError(id);
+
+    return redis.delAsync(keys[0]);
   },
 };
 

@@ -37,6 +37,7 @@
     "mongoose-beautiful-unique-validation": "^7.1.1",
     "passport-http-bearer": "^1.0.1",
     "passport-oauth2": "^1.4.0",
+    "pm2": "^2.10.2",
     "redis": "^2.8.0",
     "split": "^1.0.1",
     "systeminformation": "^3.38.0",
