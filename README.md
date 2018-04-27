@@ -1,8 +1,4 @@
 <p align="center">
-  <a href="#">
-    <img src="https://github.com/rodrigogs/cannoneer/blob/master/media/logo.png" alt="Lyrics" />
-  </a>
-
   <h3 align="center">Cannoneer</h3>
 
   <p align="center">
@@ -15,6 +11,8 @@
 [![Build Status](https://travis-ci.org/rodrigogs/cannoneer.svg?branch=master)](https://travis-ci.org/rodrigogs/cannoneer)
 [![Code Climate](https://codeclimate.com/github/rodrigogs/cannoneer/badges/gpa.svg)](https://codeclimate.com/github/rodrigogs/cannoneer)
 [![Test Coverage](https://codeclimate.com/github/rodrigogs/cannoneer/badges/coverage.svg)](https://codeclimate.com/github/rodrigogs/cannoneer/coverage)
+
+![Service Flow](https://github.com/rodrigogs/cannoneer/blob/master/media/flow.png)
 
 Setup
 -----
