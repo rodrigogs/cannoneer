@@ -123,7 +123,7 @@ exports.schedule = cronPattern => new CronJob({
 /**
  * @return {Promise<void>}
  */
-const setup = async () => {
+exports.setup = async () => {
   const startupDelay = Math.floor(Math.random() * 15000) + 5000;
 
   await Promise.delay(startupDelay);
@@ -142,7 +142,7 @@ const setup = async () => {
       MessageProcessorWorker.id = deadWorker.id;
     } catch (err) {
       logger.error(`Failed claiming dead worker "${deadWorker.id}"`, err);
-      return setup();
+      return exports.setup();
     }
   }
 
@@ -156,8 +156,6 @@ const setup = async () => {
     .then(() => debug(`worker "${MessageProcessorWorker.id}" keep alive routine stopped`))
     .catch(logger.error);
 };
-
-module.setup = setup;
 
 process.on('SIGINT', () => {
   debug(`termination routine triggered for worker "${MessageProcessorWorker.id}"`);
