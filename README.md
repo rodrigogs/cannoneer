@@ -1,12 +1,12 @@
 <p align="center">
-  <h3 align="center">Cannoneer</h3>
+  <h3 align="center">cannoneer</h3>
 
   <p align="center">
     Absurdly scalable Node.js message broker.
   </p>
 </p>
 
-## Status
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/heroku/node-js-sample)
 
 [![Build Status](https://travis-ci.org/rodrigogs/cannoneer.svg?branch=master)](https://travis-ci.org/rodrigogs/cannoneer)
 [![Code Climate](https://codeclimate.com/github/rodrigogs/cannoneer/badges/gpa.svg)](https://codeclimate.com/github/rodrigogs/cannoneer)

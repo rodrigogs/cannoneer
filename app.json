@@ -1,0 +1,10 @@
+{
+  "name": "cannoneer",
+  "description": "Absurdly scalable Node.js message broker.",
+  "repository": "https://github.com/rodrigogs/cannoneer",
+  "keywords": [
+    "node",
+    "koa",
+    "workers"
+  ]
+}
