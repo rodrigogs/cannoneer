@@ -4,15 +4,27 @@
   <p align="center">
     Absurdly scalable Node.js message broker.
   </p>
-  
-  <a href="https://heroku.com/deploy?template=https://github.com/rodrigogs/cannoneer">
-    <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
-  </a>
-</p>
 
-[![Build Status](https://travis-ci.org/rodrigogs/cannoneer.svg?branch=master)](https://travis-ci.org/rodrigogs/cannoneer)
-[![Code Climate](https://codeclimate.com/github/rodrigogs/cannoneer/badges/gpa.svg)](https://codeclimate.com/github/rodrigogs/cannoneer)
-[![Test Coverage](https://codeclimate.com/github/rodrigogs/cannoneer/badges/coverage.svg)](https://codeclimate.com/github/rodrigogs/cannoneer/coverage)
+  <p align="center">
+    <a href="https://heroku.com/deploy?template=https://github.com/rodrigogs/cannoneer">
+      <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
+    </a>
+  </p>
+
+  <p align="center">
+   <a href="https://travis-ci.org/rodrigogs/cannoneer">
+    <img src="https://travis-ci.org/rodrigogs/cannoneer.svg?branch=master" alt="Build Status">
+   </a>
+
+   <a href="https://codeclimate.com/github/rodrigogs/cannoneer">
+    <img src="https://codeclimate.com/github/rodrigogs/cannoneer/badges/gpa.svg" alt="Code Climate">
+   </a>
+
+   <a href="https://codeclimate.com/github/rodrigogs/cannoneer/coverage">
+    <img src="https://codeclimate.com/github/rodrigogs/cannoneer/badges/coverage.svg" alt="Test Coverage">
+   </a>
+  </p>
+</p>
 
 ![Service Flow](https://github.com/rodrigogs/cannoneer/blob/master/media/flow.png)
 
