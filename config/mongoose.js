@@ -15,7 +15,7 @@ mongoose.connection.on('open', () => logger.info('Mongoose default connection is
 
 mongoose.connection.on('connected', () => logger.info(`Mongoose default connection open to ${Env.MONGO_URL}`));
 
-mongoose.connection.on('error', err => logger.error(`Mongoose default connection error: ${err}`) && reject(err));
+mongoose.connection.on('error', err => logger.error(`Mongoose default connection error: ${err}`));
 
 mongoose.connection.on('disconnected', () => logger.info('Mongoose default connection disconnected'));
 

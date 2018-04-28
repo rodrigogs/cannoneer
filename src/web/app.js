@@ -1,7 +1,7 @@
 const {
   logger,
   redis,
-  mongoose,
+  // mongoose,
   Env,
 } = require('../../config');
 const debug = require('debuggler')();

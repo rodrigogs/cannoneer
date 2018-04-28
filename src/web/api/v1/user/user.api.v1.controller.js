@@ -1,12 +1,12 @@
-const debug = require('debuggler')();
+// const debug = require('debuggler')();
 const UserService = require('./user.api.v1.service');
 
 const UserController = {
   /**
    */
-  get: async (ctx) => {
-
-  },
+  // get: async (ctx) => {
+  //
+  // },
 
   /**
    */
@@ -18,9 +18,9 @@ const UserController = {
 
   /**
    */
-  update: async (ctx) => {
-
-  },
+  // update: async (ctx) => {
+  //
+  // },
 };
 
 module.exports = UserController;

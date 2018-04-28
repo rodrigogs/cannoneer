@@ -1,7 +1,7 @@
-const debug = require('debuggler')();
+// const debug = require('debuggler')();
 const passport = require('../../../../../config/passport');
 
-passport.initializeBearerStrategy('bearer', {}, async (token, cb) => {
+passport.initializeBearerStrategy('bearer', {}, async (/* token, cb */) => {
   // TODO auth strategy
 });
 
