@@ -1,2 +1,2 @@
-web: CONTEXT=web node bin/www &
-message-worker: CONTEXT=message-worker bin/workers &
+web: CONTEXT=web nohup node bin/www &
+message-worker: CONTEXT=message-worker nohup node bin/workers &
