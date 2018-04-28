@@ -4,9 +4,11 @@
   <p align="center">
     Absurdly scalable Node.js message broker.
   </p>
+  
+  <a href="https://heroku.com/deploy?template=https://github.com/rodrigogs/cannoneer">
+    <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
+  </a>
 </p>
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/heroku/node-js-sample)
 
 [![Build Status](https://travis-ci.org/rodrigogs/cannoneer.svg?branch=master)](https://travis-ci.org/rodrigogs/cannoneer)
 [![Code Climate](https://codeclimate.com/github/rodrigogs/cannoneer/badges/gpa.svg)](https://codeclimate.com/github/rodrigogs/cannoneer)
