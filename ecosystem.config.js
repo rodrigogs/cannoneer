@@ -5,15 +5,15 @@ const _ = require('lodash');
 const contexts = Env.CONTEXTS.split(',');
 const apps = [];
 
-if (_.includes(contexts, 'server') || Env.CONTEXTS === 'all') {
+if (_.includes(contexts, 'web') || Env.CONTEXTS === 'all') {
   apps.push({
-    name: 'server',
+    name: 'web',
     script: './bin/www',
     instances: Env.SERVER_CORES || os.cpus().length,
     exec_mode: 'cluster',
     watch: true,
     env: {
-      CONTEXT: 'server',
+      CONTEXT: 'web',
     },
   });
 }

@@ -40,7 +40,7 @@ class Env {
    * Application's context.
    *
    * 'all' enables all contexts
-   * 'server' enables http server
+   * 'web' enables http server
    * 'message-worker' enables MessageWorker
    *
    * @default 'all'
