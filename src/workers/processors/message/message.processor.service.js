@@ -23,6 +23,13 @@ const MessageProcessorService = {
     return `msgwrkr:instance:${id}:${status}`;
   },
 
+  getWorkerKeyById: async (id) => {
+    const keyPattern = MessageProcessorService.getWorkerKey({ id });
+    const [key] = await redis.keysAsync(keyPattern);
+
+    return key;
+  },
+
   getAllWorkers: () => {
     debug('retrieving all workers');
     return redis
@@ -60,6 +67,14 @@ const MessageProcessorService = {
         return (acc.lastSeen.getTime() > curr.lastSeen.getTime()) ? acc : curr;
       });
     }
+  },
+
+  workerHasMessages: async (id) => {
+    if (!id) return false;
+
+    const keyPattern = MessageService.getMessageKey({ worker: id });
+    const keys = await redis.keysAsync(keyPattern);
+    return keys > 0;
   },
 
   /**

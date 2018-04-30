@@ -133,6 +133,19 @@ exports.setup = async () => {
   await redis.waitForReady();
 
   const deadWorker = await MessageProcessorService.findDeadWorker();
+  const workerHasMessages = await MessageProcessorService.workerHasMessages(deadWorker.id);
+
+  if (deadWorker && !workerHasMessages) {
+    debug(`found dead worker "${deadWorker.id}" with no messages`);
+
+    const key = await MessageProcessorService.getWorkerKeyById(deadWorker.id);
+    await MessageProcessorService.removeFromMemory(key);
+
+    debug(`dead worker "${deadWorker.id}" removed from memory`);
+
+    return exports.setup();
+  }
+
   if (deadWorker) {
     logger.info(`Dead worker "${deadWorker.id}" found`);
     try {
