@@ -1,4 +1,4 @@
-// const os = require('os');
+const os = require('os');
 const Env = require('./config/env');
 const _ = require('lodash');
 
@@ -9,7 +9,7 @@ if (_.includes(contexts, 'web') || Env.CONTEXTS === 'all') {
   apps.push({
     name: 'web',
     script: './bin/www',
-    // instances: Env.SERVER_CORES || os.cpus().length,
+    instances: Env.SERVER_CORES || os.cpus().length,
     exec_mode: 'cluster',
     watch: true,
     env: {
@@ -22,7 +22,7 @@ if (_.includes(contexts, 'message-worker') || Env.CONTEXTS === 'all') {
   apps.push({
     name: 'message-worker',
     script: './bin/workers',
-    // instances: Env.MESSAGE_PROCESSOR_CORES || os.cpus().length,
+    instances: Env.MESSAGE_PROCESSOR_CORES || os.cpus().length,
     exec_mode: 'cluster',
     watch: true,
     env: {
