@@ -133,7 +133,9 @@ exports.setup = async () => {
   await redis.waitForReady();
 
   const deadWorker = await MessageProcessorService.findDeadWorker();
-  const workerHasMessages = await MessageProcessorService.workerHasMessages(deadWorker.id);
+  const workerHasMessages = deadWorker
+    ? await MessageProcessorService.workerHasMessages(deadWorker.id)
+    : false;
 
   if (deadWorker && !workerHasMessages) {
     debug(`found dead worker "${deadWorker.id}" with no messages`);
