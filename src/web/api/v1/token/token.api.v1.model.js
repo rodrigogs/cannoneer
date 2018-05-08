@@ -11,10 +11,12 @@ const TokenModel = new Schema({
     unique: true,
   },
   active: {
+    type: Boolean,
     default: true,
     required: true,
   },
   duration: {
+    type: Number,
     default: DEFAULT_DURATION,
     required: true,
   },
@@ -23,4 +25,4 @@ const TokenModel = new Schema({
   updatedAt: true,
 });
 
-module.exports = TokenModel;
+module.exports = mongoose.model('Token', TokenModel);

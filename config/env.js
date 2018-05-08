@@ -126,7 +126,15 @@ class Env {
    * @return {String}
    */
   static get INSTANCE_ID() {
-    return INSTANCE_ID;
+    return process.env.INSTANCE_ID;
+  }
+
+  /**
+   * @default 'secret'
+   * @return {String}
+   */
+  static get SESSION_SECRET() {
+    return process.env.SESSION_SECRET || 'secret';
   }
 }
 

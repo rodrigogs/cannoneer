@@ -4,8 +4,7 @@ class InvalidResponseSchemaError extends Error {
       return `[${err.keyword} validation] at "${err.dataPath}" ${err.message}`;
     });
 
-    super(errors.join(', '));
-    this.name = 'InvalidResponseSchemaError';
+    super('InvalidResponseSchemaError', errors.join(', '));
   }
 }
 

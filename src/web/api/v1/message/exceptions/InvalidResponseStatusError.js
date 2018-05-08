@@ -1,7 +1,6 @@
 class InvalidResponseStatusError extends Error {
   constructor(expected, status) {
-    super(`Expecting status ${expected}, found ${status}`);
-    this.name = 'InvalidResponseStatusError';
+    super('InvalidResponseStatusError', `Expecting status ${expected}, found ${status}`);
   }
 }
 

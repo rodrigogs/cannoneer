@@ -126,10 +126,10 @@ exports.schedule = cronPattern => new CronJob({
 exports.setup = async () => {
   const startupDelay = Math.floor(Math.random() * 15000) + 5000;
 
+  debug(`delaying ${startupDelay} millis...`);
   await Promise.delay(startupDelay);
 
   debug('configuring new worker');
-
   await redis.waitForReady();
 
   const deadWorker = await MessageProcessorService.findDeadWorker();
@@ -140,10 +140,11 @@ exports.setup = async () => {
   if (deadWorker && !workerHasMessages) {
     debug(`found dead worker "${deadWorker.id}" with no messages`);
 
+    debug(`resurrecting worker "${deadWorker.id}"`);
     const key = await MessageProcessorService.getWorkerKeyById(deadWorker.id);
-    await MessageProcessorService.removeFromMemory(key);
 
-    debug(`dead worker "${deadWorker.id}" removed from memory`);
+    await MessageProcessorService.removeFromMemory(key);
+    debug(`dead worker "${deadWorker.id}" removed from registry`);
 
     return exports.setup();
   }

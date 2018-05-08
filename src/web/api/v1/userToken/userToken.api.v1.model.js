@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Types;
 
+// Initialize refs
+require('../user/user.api.v1.model');
+require('../token/token.api.v1.model');
+
 const UserTokenModel = new Schema({
   user: {
     type: ObjectId,
@@ -18,4 +22,4 @@ const UserTokenModel = new Schema({
   createdAt: true,
 });
 
-module.exports = UserTokenModel;
+module.exports = mongoose.model('UserToken', UserTokenModel);
