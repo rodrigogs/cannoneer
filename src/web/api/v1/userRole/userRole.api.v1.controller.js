@@ -4,9 +4,8 @@
 const UserRoleController = {
   /**
    */
-  // get: async (ctx) => {
-  //
-  // },
+  get: async (ctx) => {
+  },
 
   /**
    */

@@ -2,7 +2,7 @@
   "name": "cannoneer",
   "version": "0.0.0-SCRAP",
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "nodemon ./bin/all",
     "eslint": "eslint . --ext .js",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "cross-env NODE_ENV=test mocha --exit \"src/**/*.spec.unit.js\" --require config",

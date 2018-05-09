@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 const { Schema } = mongoose;
 
@@ -8,7 +9,7 @@ const validateLength = (min = 0) => (max = Number.MAX_SAFE_INTEGER) => ({
   message: `Field "{PATH}" length must be between ${min} and ${max}`,
 });
 
-const UserSchema = new Schema({
+const UserModel = new Schema({
   name: {
     type: String,
     required: true,
@@ -48,7 +49,7 @@ const UserSchema = new Schema({
   updatedAt: true,
 });
 
-UserSchema.virtual('password')
+UserModel.virtual('password')
   .set(function set(password) {
     this._plain_password = password;
     this.salt = crypto.randomBytes(128).toString('base64');
@@ -58,14 +59,14 @@ UserSchema.virtual('password')
     return this._plain_password;
   });
 
-UserSchema.methods.encryptPassword = function encryptPassword(password) {
+UserModel.methods.encryptPassword = function encryptPassword(password) {
   return crypto.pbkdf2Sync(password, this.salt, 100000, 512, 'sha512').toString('hex');
 };
 
-UserSchema.methods.comparePassword = function comparePassword(candidatePassword) {
+UserModel.methods.comparePassword = function comparePassword(candidatePassword) {
   return this.encryptPassword(candidatePassword) === this.hashedPassword;
 };
 
-const User = mongoose.model('User', UserSchema);
+UserModel.plugin(beautifyUnique);
 
-module.exports = User;
+module.exports = mongoose.model('User', UserModel);

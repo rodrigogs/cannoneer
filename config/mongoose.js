@@ -1,6 +1,5 @@
 const debug = require('debuggler')();
 const mongoose = require('mongoose');
-const beautifyUnique = require('mongoose-beautiful-unique-validation');
 const Env = require('./env');
 const Promise = require('./promise');
 const logger = require('./logger');
@@ -26,7 +25,4 @@ process.on('SIGINT', () => {
   });
 });
 
-module.exports = () => {
-  mongoose.plugin(beautifyUnique);
-  return mongoose.connect(Env.MONGO_URL, { reconnectTries: Number.MAX_VALUE });
-};
+module.exports = () => mongoose.connect(Env.MONGO_URL, { reconnectTries: Number.MAX_VALUE });

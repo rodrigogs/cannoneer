@@ -1,22 +1,25 @@
 const mongoose = require('mongoose');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 const { Schema } = mongoose;
-const { ObjectId } = mongoose.Types;
 
 const RoleModel = new Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
-  role: {
-    type: ObjectId,
-    required: true,
-  },
-  token: {
-    type: ObjectId,
+  description: {
+    type: String,
     required: false,
+  },
+  ref: {
+    type: String,
+    required: true,
     unique: true,
   },
 });
 
-module.exports = RoleModel;
+RoleModel.plugin(beautifyUnique);
+
+module.exports = mongoose.model('Role', RoleModel);

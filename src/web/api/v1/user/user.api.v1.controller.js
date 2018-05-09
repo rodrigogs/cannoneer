@@ -4,9 +4,8 @@ const UserService = require('./user.api.v1.service');
 const UserController = {
   /**
    */
-  // get: async (ctx) => {
-  //
-  // },
+  get: async (ctx) => {
+  },
 
   /**
    */

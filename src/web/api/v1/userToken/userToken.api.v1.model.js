@@ -1,11 +1,8 @@
 const mongoose = require('mongoose');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 const { Schema } = mongoose;
-const { ObjectId } = mongoose.Types;
-
-// Initialize refs
-require('../user/user.api.v1.model');
-require('../token/token.api.v1.model');
+const { ObjectId } = Schema.Types;
 
 const UserTokenModel = new Schema({
   user: {
@@ -21,5 +18,7 @@ const UserTokenModel = new Schema({
 }, {
   createdAt: true,
 });
+
+UserTokenModel.plugin(beautifyUnique);
 
 module.exports = mongoose.model('UserToken', UserTokenModel);

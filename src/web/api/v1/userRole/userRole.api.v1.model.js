@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 const { Schema } = mongoose;
-const { ObjectId } = mongoose.Types;
+const { ObjectId } = Schema.Types;
 
 const UserRoleModel = new Schema({
   user: {
@@ -14,6 +15,13 @@ const UserRoleModel = new Schema({
     required: true,
     ref: 'Role',
   },
+  type: {
+    type: String,
+    enum: ['R', 'W', 'RW'],
+    required: true,
+  },
 });
 
-module.exports = UserRoleModel;
+UserRoleModel.plugin(beautifyUnique);
+
+module.exports = mongoose.model('UserRole', UserRoleModel);

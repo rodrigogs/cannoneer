@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 const { Schema } = mongoose;
 
@@ -24,5 +25,7 @@ const TokenModel = new Schema({
   createdAt: true,
   updatedAt: true,
 });
+
+TokenModel.plugin(beautifyUnique);
 
 module.exports = mongoose.model('Token', TokenModel);

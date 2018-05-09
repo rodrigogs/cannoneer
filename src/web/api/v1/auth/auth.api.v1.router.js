@@ -6,6 +6,6 @@ const router = new Router();
 
 debug('configuring routes');
 
-router.get('/', AuthController.get);
+router.post('/', AuthController.authenticate);
 
 module.exports = router;

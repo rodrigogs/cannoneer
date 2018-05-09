@@ -12,6 +12,7 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const session = require('koa-session');
 const errorMiddleware = require('./error.middleware');
+const passport = require('koa-passport');
 
 /**
  * Bootstraps Koa application.
@@ -28,8 +29,7 @@ const bootstrap = async () => {
   app.use(cors());
   app.use(morgan(Env.HTTP_LOG_CONFIG, { stream: logger.stream }));
 
-  app.keys = [Env.SESSION_SECRET];
-  app.use(session({}, app));
+  app.use(passport.initialize());
 
   app.use(bodyParser({
     jsonLimit: '10mb',

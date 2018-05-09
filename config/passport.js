@@ -5,7 +5,7 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
 debug('configuring passport');
 
 const initializeBearerStrategy = (name, options, callback) => passport
-  .use(name, new BearerStrategy(options), callback);
+  .use(name, new BearerStrategy(options, callback));
 
 module.exports = {
   initializeBearerStrategy,
