@@ -1,7 +1,6 @@
 const debug = require('debuggler')();
 const PassportConfig = require('../../../../../config/passport');
 const AuthService = require('./auth.api.v1.service');
-const UserRoleService = require('../userRole/userRole.api.v1.service');
 const UnauthorizedError = require('./exceptions/UnauthorizedError');
 const passport = require('koa-passport');
 
@@ -9,27 +8,47 @@ PassportConfig.initializeBearerStrategy('bearer', {}, async (token, done) => {
   debug(`authorizing token "${token}"`);
 
   try {
-    const user = await AuthService.authorize(token);
-    done(null, user);
+    const userToken = await AuthService.authorize(token);
+    done(null, userToken);
   } catch (err) {
     done(err);
   }
 });
 
-const AuthMiddleware = role => async (ctx, next) => {
-  debug('verifying if request is authenticated');
+const getMethodType = method => ({
+  GET: 'read',
+  PUT: 'write',
+  POST: 'write',
+  DELETE: 'write',
+}[method.toUpperCase()]);
 
-  return passport.authenticate('bearer', { session: false })(ctx, async () => {
-    if (ctx.isAuthenticated()) {
-      const type = UserRoleService.getMethodUserRoleType(ctx.method);
-      if (role) await AuthService.ensureUserRoleAccess(ctx.state.user, role, type);
+const AuthMiddleware = {
+  /**
+   * @return {*}
+   */
+  authenticate: () => passport.authenticate('bearer', { session: false }),
 
-      return next();
-    }
+  /**
+   * @param {String} scope
+   * @return {*}
+   */
+  grant: (scope) => {
+    if (!scope) throw new Error('Scope must be specified.');
 
-    debug('session is not authenticated');
-    throw new UnauthorizedError();
-  });
+    return async (ctx, next) => {
+      debug(`verifying if authenticated user has grant "${scope}"`);
+
+      if (ctx.isAuthenticated()) {
+        const type = getMethodType(ctx.method);
+        if (scope) await AuthService.ensureScopeAccess(ctx.state.user, scope, type);
+
+        return next();
+      }
+
+      debug('session is not authenticated');
+      throw new UnauthorizedError();
+    };
+  },
 };
 
 module.exports = AuthMiddleware;

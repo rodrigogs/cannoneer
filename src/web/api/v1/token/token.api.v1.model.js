@@ -21,10 +21,20 @@ const TokenModel = new Schema({
     default: DEFAULT_DURATION,
     required: true,
   },
+  scopes: {
+    type: [String],
+  },
 }, {
   createdAt: true,
   updatedAt: true,
 });
+
+TokenModel.methods.normalizedScopes = function normalizedScopes() {
+  return this.scopes.map((s) => {
+    const [type, scope] = s.split(':');
+    return { type, scope };
+  });
+};
 
 TokenModel.plugin(beautifyUnique);
 

@@ -1,5 +1,6 @@
 const debug = require('debuggler')();
 const Router = require('koa-router');
+const AuthMiddleware = require('./auth/auth.api.v1.middleware');
 // const ApiSchema = require('./api.v1.schema');
 // const graphqlHTTP = require('koa-graphql');
 
@@ -7,21 +8,26 @@ const router = new Router();
 
 debug('configuring routes');
 
-const auth = require('./auth');
-const role = require('./role');
-const user = require('./user');
-const userRole = require('./userRole');
-const message = require('./message');
+const AuthRouter = require('./auth');
+const UserRouter = require('./user');
+const MessageRouter = require('./message');
+
+router.use('/auth')
+  .use(AuthRouter.routes(), AuthRouter.allowedMethods());
 
 // router.all('/graphql', graphqlHTTP({
 //   schema: ApiSchema,
 //   graphiql: true,
 // }));
 
-router.use('/auth', auth.routes(), auth.allowedMethods());
-router.use('/role', role.routes(), role.allowedMethods());
-router.use('/user', user.routes(), user.allowedMethods());
-router.use('/userRole', userRole.routes(), userRole.allowedMethods());
-router.use('/message', message.routes(), message.allowedMethods());
+router.use(AuthMiddleware.authenticate());
+
+router.use('/user')
+  .use(AuthMiddleware.grant('user'))
+  .use(UserRouter.routes(), UserRouter.allowedMethods());
+
+router.use('/message')
+  .use(AuthMiddleware.grant('message'))
+  .use(MessageRouter.routes(), MessageRouter.allowedMethods());
 
 module.exports = router;

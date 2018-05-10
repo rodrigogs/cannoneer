@@ -1,7 +1,6 @@
 const debug = require('debuggler')();
 const TokenService = require('../token/token.api.v1.service');
 const UserTokenService = require('../userToken/userToken.api.v1.service');
-const UserRoleService = require('../userRole/userRole.api.v1.service');
 const UnauthorizedError = require('./exceptions/UnauthorizedError');
 
 const AuthService = {
@@ -13,14 +12,16 @@ const AuthService = {
     debug(`validating token "${token}"`);
     TokenService.validate(userToken.token);
 
-    return userToken.user;
+    return userToken;
   },
 
-  ensureUserRoleAccess: async (user, role, type) => {
+  ensureScopeAccess: async (token, role, type) => {
     debug('ensuring user role access');
 
-    const hasRole = await UserRoleService.hasRole(user, role, type);
-    if (hasRole) return;
+    const scoped = token.normalizedScopes();
+
+    const hasScope =
+    if (hasScope) return;
 
     debug('user have no role for the requested operation');
     throw new UnauthorizedError();
