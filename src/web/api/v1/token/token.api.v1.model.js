@@ -29,13 +29,6 @@ const TokenModel = new Schema({
   updatedAt: true,
 });
 
-TokenModel.methods.normalizedScopes = function normalizedScopes() {
-  return this.scopes.map((s) => {
-    const [type, scope] = s.split(':');
-    return { type, scope };
-  });
-};
-
 TokenModel.plugin(beautifyUnique);
 
 module.exports = mongoose.model('Token', TokenModel);
