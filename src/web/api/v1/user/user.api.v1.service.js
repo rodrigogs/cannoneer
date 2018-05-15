@@ -19,6 +19,12 @@ const UserService = {
       .exec();
   },
 
+  findOne: async (query) => {
+    debug('retrieving user', query);
+
+    return User.findOne(query).exec();
+  },
+
   create: async (user) => {
     debug('creating user', user);
 

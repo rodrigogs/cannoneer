@@ -6,6 +6,9 @@ const router = new Router();
 
 debug('configuring routes');
 
-router.get('/', UserController.get);
+router.post('/', UserController.create);
+router.get('/:id', UserController.get);
+router.put('/:id', UserController.update);
+router.delete('/:id', UserController.disable);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 class ExpiredTokenError extends Error {
   constructor(token) {
-    super('ExpiredTokenError', `Token "${token}" is expired.`);
+    super(`Token "${token}" is expired.`);
+    this.name = 'ExpiredTokenError';
     this.status = 401;
   }
 }

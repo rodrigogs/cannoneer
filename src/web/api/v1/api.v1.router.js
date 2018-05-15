@@ -12,8 +12,7 @@ const AuthRouter = require('./auth');
 const UserRouter = require('./user');
 const MessageRouter = require('./message');
 
-router.use('/auth')
-  .use(AuthRouter.routes(), AuthRouter.allowedMethods());
+router.use('/auth', AuthRouter.routes(), AuthRouter.allowedMethods());
 
 // router.all('/graphql', graphqlHTTP({
 //   schema: ApiSchema,
@@ -22,12 +21,16 @@ router.use('/auth')
 
 router.use(AuthMiddleware.authenticate());
 
-router.use('/user')
-  .use(AuthMiddleware.grant('user'))
-  .use(UserRouter.routes(), UserRouter.allowedMethods());
+router.use(
+  '/user',
+  AuthMiddleware.grant('user'),
+  UserRouter.routes(), UserRouter.allowedMethods(),
+);
 
-router.use('/message')
-  .use(AuthMiddleware.grant('message'))
-  .use(MessageRouter.routes(), MessageRouter.allowedMethods());
+router.use(
+  '/message',
+  AuthMiddleware.grant('message'),
+  MessageRouter.routes(), MessageRouter.allowedMethods(),
+);
 
 module.exports = router;

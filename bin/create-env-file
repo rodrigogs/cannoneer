@@ -20,7 +20,7 @@ const program = async () => {
 
     existingFile
       .split(os.EOL)
-      .filter(line => !line.startsWith('#') || !line.contains('='))
+      .filter(line => !line.startsWith('#') || !line.includes('='))
       .map(line => line.split('=')[0])
       .forEach((env) => {
         const index = envs.indexOf(env);

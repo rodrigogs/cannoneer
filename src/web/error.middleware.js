@@ -1,8 +1,20 @@
 const debug = require('debuggler');
+const logger = require('../../config/logger');
 
 const badRequest = (ctx, err) => {
   ctx.status = 400;
-  ctx.body = { name: err.name, message: err.message };
+  ctx.body = {
+    name: err.name || 'BadRequestError',
+    message: err.message || 'Bad Request',
+  };
+};
+
+const unauthorized = (ctx, err) => {
+  ctx.status = 401;
+  ctx.body = {
+    name: err.name || 'Unauthorized',
+    message: err.message || 'Unauthorized',
+  };
 };
 
 const notFound = (ctx, err) => {
@@ -14,12 +26,18 @@ const notFound = (ctx, err) => {
 };
 
 const internalError = (ctx, err) => {
+  logger.error(err);
+
   ctx.status = 500;
-  ctx.body = { name: err.name, message: err.message };
+  ctx.body = {
+    name: err.name || 'InternalError',
+    message: err.message || 'Internal Error',
+  };
 };
 
 const hanldle = code => ({
   400: badRequest,
+  401: unauthorized,
   404: notFound,
   500: internalError,
 }[code || 500]);

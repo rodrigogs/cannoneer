@@ -10,7 +10,6 @@ const helmet = require('koa-helmet');
 const morgan = require('koa-morgan');
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
-const session = require('koa-session');
 const errorMiddleware = require('./error.middleware');
 const passport = require('koa-passport');
 
@@ -39,8 +38,7 @@ const bootstrap = async () => {
   await mongoose();
 
   const router = require('./router');
-  app.use(router.routes());
-  app.use(router.allowedMethods());
+  app.use(router.routes(), router.allowedMethods());
 
   return app;
 };

@@ -25,8 +25,10 @@ const TokenModel = new Schema({
     type: [String],
   },
 }, {
-  createdAt: true,
-  updatedAt: true,
+  timestamps: {
+    createdAt: true,
+    updatedAt: true,
+  },
 });
 
 TokenModel.plugin(beautifyUnique);

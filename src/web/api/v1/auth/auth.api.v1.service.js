@@ -1,8 +1,11 @@
 const debug = require('debuggler')();
 const TokenService = require('../token/token.api.v1.service');
 const UserTokenService = require('../userToken/userToken.api.v1.service');
+const UserService = require('../user/user.api.v1.service');
 const UnauthorizedError = require('./exceptions/UnauthorizedError');
 const UnauthorizedScopeError = require('./exceptions/UnauthorizedScopeError');
+const BadRequestError = require('./exceptions/BadRequestError');
+const BadCredentialsError = require('./exceptions/BadCredentialsError');
 const redis = require('../../../../../config/redis');
 
 /**
@@ -25,20 +28,37 @@ const normalizeScopes = scopes => scopes.map((s) => {
 });
 
 /**
- * @param {Object} token
+ * @param {String} token
  * @return {Promise<UserToken>}
  */
 const resolveUserToken = async (token) => {
-  let userToken = await redis.getAsync(`user:token:${token._id}`).then(JSON.parse);
+  let userToken = await redis.getAsync(`user:token:${token}`).then(JSON.parse);
   if (!userToken) {
     userToken = await UserTokenService.get(token);
-    await redis.setAsync(`user:token:${token._id}`, JSON.stringify(userToken));
+    if (userToken) await redis.setAsync(`user:token:${token}`, JSON.stringify(userToken));
   }
 
   return userToken;
 };
 
 const AuthService = {
+  /**
+   * @param {String} username
+   * @param {String} password
+   * @param {String[]} scopes
+   * @return {Promise<UserToken>}
+   */
+  authenticate: async (username, password, scopes) => {
+    if (!username) throw new BadRequestError('Username is required');
+    if (!password) throw new BadRequestError('Password is required');
+
+    const user = await UserService.findOne({ username });
+    if (!user) throw new BadCredentialsError();
+    if (!user.comparePassword(password)) throw new BadCredentialsError();
+
+    return UserTokenService.create(user, scopes);
+  },
+
   /**
    * @param {String} token
    * @return {Promise<UserToken>}
@@ -66,7 +86,7 @@ const AuthService = {
     const scopes = normalizeScopes(token.scopes);
 
     const hasScope = scopes.find((s) => {
-      return s.type === type
+      return (s.type === type || s.type === 'admin')
         && s.name === scope;
     });
 

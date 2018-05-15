@@ -1,10 +1,16 @@
 const debug = require('debuggler')();
+const Env = require('../../../../../config/env');
 const PassportConfig = require('../../../../../config/passport');
 const AuthService = require('./auth.api.v1.service');
 const UnauthorizedError = require('./exceptions/UnauthorizedError');
 const passport = require('koa-passport');
 
 PassportConfig.initializeBearerStrategy('bearer', {}, async (token, done) => {
+  if (!Env.AUTH_ENABLED) {
+    debug('authentication is disabled');
+    done(null, null);
+  }
+
   debug(`authorizing token "${token}"`);
 
   try {
@@ -40,7 +46,7 @@ const AuthMiddleware = {
 
       if (ctx.isAuthenticated()) {
         const type = getMethodType(ctx.method);
-        if (scope) await AuthService.ensureScopeAccess(ctx.state.user, scope, type);
+        if (scope) await AuthService.ensureScopeAccess(ctx.state.user.token, scope, type);
 
         return next();
       }

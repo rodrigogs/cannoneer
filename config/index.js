@@ -1,8 +1,9 @@
+const Env = require('./env');
+
 const debug = require('debuggler')();
 
 debug('initializing app configuration');
 
-const Env = require('./env');
 const logger = require('./logger');
 const Promise = require('./promise');
 const redis = require('./redis');

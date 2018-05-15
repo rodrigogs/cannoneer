@@ -1,8 +1,4 @@
-const Ajv = require('ajv');
-
-const ajv = new Ajv();
-
-const MessageModel = ajv.compile({
+const MessageModel = {
   title: 'Message',
   type: 'object',
   properties: {
@@ -39,6 +35,6 @@ const MessageModel = ajv.compile({
     'destinations',
     'method',
   ],
-});
+};
 
 module.exports = MessageModel;

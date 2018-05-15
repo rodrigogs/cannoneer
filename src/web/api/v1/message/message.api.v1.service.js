@@ -1,16 +1,14 @@
 const debug = require('debuggler')();
 const axios = require('axios');
 const logger = require('../../../../../config/logger');
-const MessageSchema = require('./message.api.v1.model');
+const MessageSchema = require('./message.api.v1.schema');
 const redis = require('../../../../../config/redis');
 const { ObjectId } = require('mongoose').Types;
-const Ajv = require('ajv');
+const JSONUtils = require('../../../../util/json.util');
 const InvalidMessageSchemaError = require('./exceptions/InvalidMessageSchemaError');
 const InvalidResponseStatusError = require('./exceptions/InvalidResponseStatusError');
 const InvalidResponseSchemaError = require('./exceptions/InvalidResponseSchemaError');
 const MessageNotFoundError = require('./exceptions/MessageNotFoundError');
-
-const ajv = new Ajv();
 
 const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
 
@@ -42,9 +40,8 @@ const MessageService = {
     }
 
     if (body) {
-      const validate = ajv.compile(body);
-      const valid = validate(response.data);
-      if (!valid) throw new InvalidResponseSchemaError(validate.errors);
+      const errors = JSONUtils.validate(body)(response.data);
+      if (errors) throw new InvalidResponseSchemaError(errors);
       debug('valid body');
     }
   },
@@ -144,9 +141,9 @@ const MessageService = {
    * @return {Promise<String>}
    */
   send: async (message) => {
-    const valid = MessageSchema(message);
-    if (!valid) {
-      throw new InvalidMessageSchemaError(MessageSchema.errors);
+    const errors = JSONUtils.validate(MessageSchema)(message);
+    if (errors) {
+      throw new InvalidMessageSchemaError(errors);
     }
 
     return MessageService.processMessage(message);

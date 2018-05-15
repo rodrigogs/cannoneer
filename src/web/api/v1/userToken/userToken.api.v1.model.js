@@ -16,7 +16,9 @@ const UserTokenModel = new Schema({
     ref: 'Token',
   },
 }, {
-  createdAt: true,
+  timestamps: {
+    createdAt: true,
+  },
 });
 
 UserTokenModel.plugin(beautifyUnique);

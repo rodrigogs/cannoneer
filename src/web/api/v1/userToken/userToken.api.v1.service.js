@@ -26,6 +26,16 @@ const UserTokenService = {
 
     return user;
   },
+
+  /**
+   * @param {Object} user
+   * @param {String[]} scopes
+   * @return {Token}
+   */
+  create: async (user, scopes) => {
+    const token = await TokenService.create(user._id, scopes);
+    return new UserToken({ user, token }).save();
+  },
 };
 
 module.exports = UserTokenService;

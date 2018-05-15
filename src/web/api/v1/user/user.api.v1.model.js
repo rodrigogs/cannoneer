@@ -45,8 +45,10 @@ const UserModel = new Schema({
     required: true,
   },
 }, {
-  createdAt: true,
-  updatedAt: true,
+  timestamps: {
+    createdAt: true,
+    updatedAt: true,
+  },
 });
 
 UserModel.virtual('password')

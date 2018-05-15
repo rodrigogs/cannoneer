@@ -1,6 +1,7 @@
 class MessageNotFoundError extends Error {
   constructor(id) {
-    super('MessageNotFoundError', `Message not found for id "${id}"`);
+    super(`Message not found for id "${id}"`);
+    this.name = 'MessageNotFoundError';
     this.status = 404;
   }
 }

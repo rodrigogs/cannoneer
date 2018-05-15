@@ -4,7 +4,8 @@ class InvalidMessageSchemaError extends Error {
       return `[${err.keyword} validation] at "${err.dataPath}" ${err.message}`;
     });
 
-    super('InvalidMessageSchemaError', errors.join(', '));
+    super(errors.join(', '));
+    this.name = 'InvalidMessageSchemaError';
     this.status = 400;
   }
 }

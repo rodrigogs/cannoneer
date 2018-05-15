@@ -1,5 +1,5 @@
-const UserSchema = {
-  title: 'User',
+const TokenSchema = {
+  title: 'Token',
   type: 'object',
   additionalProperties: false,
   properties: {
@@ -7,32 +7,23 @@ const UserSchema = {
       type: 'string',
       required: true,
     },
-    name: {
+    hash: {
       type: 'string',
       required: true,
-      minimum: 4,
-      maximum: 80,
-    },
-    email: {
-      type: 'string',
-      required: true,
-      minimum: 5,
-      maximum: 320,
-    },
-    about: {
-      type: 'string',
-      required: true,
-      minimum: 5,
-      maximum: 300,
-    },
-    username: {
-      type: 'string',
-      required: true,
-      minimum: 4,
-      maximum: 15,
     },
     active: {
       type: 'boolean',
+      required: true,
+    },
+    duration: {
+      type: 'number',
+      required: true,
+    },
+    scopes: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
       required: true,
     },
     createdAt: {
@@ -46,4 +37,4 @@ const UserSchema = {
   },
 };
 
-module.exports = UserSchema;
+module.exports = TokenSchema;

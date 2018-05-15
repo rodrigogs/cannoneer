@@ -1,6 +1,7 @@
 class InvalidUpdateFieldError extends Error {
   constructor(field) {
-    super('InvalidUpdateFieldError', `Field "${field}" cannot be updated`);
+    super(`Field "${field}" cannot be updated`);
+    this.name = 'InvalidUpdateFieldError';
     this.status = 400;
   }
 }

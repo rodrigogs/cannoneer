@@ -128,6 +128,13 @@ class Env {
   static get INSTANCE_ID() {
     return process.env.INSTANCE_ID || INSTANCE_ID;
   }
+
+  /**
+   * @return {boolean}
+   */
+  static get AUTH_ENABLED() {
+    return String(process.env.AUTH_ENABLED).toUpperCase() === 'TRUE';
+  }
 }
 
 module.exports = Env;

@@ -1,6 +1,7 @@
 class InactiveTokenError extends Error {
   constructor(token) {
-    super('InactiveTokenError', `Token "${token}" is inactive.`);
+    super(`Token "${token}" is inactive.`);
+    this.name = 'InactiveTokenError';
     this.status = 401;
   }
 }
