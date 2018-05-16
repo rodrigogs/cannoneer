@@ -87,7 +87,7 @@ const AuthService = {
 
     const hasScope = scopes.find((s) => {
       return (s.type === type || s.type === 'admin')
-        && s.name === scope;
+        && (s.name === scope || s.name === 'admin');
     });
 
     if (hasScope) return;

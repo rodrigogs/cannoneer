@@ -25,7 +25,7 @@
     "koa-bodyparser": "^4.2.0",
     "koa-helmet": "^4.0.0",
     "koa-morgan": "^1.0.1",
-    "koa-passport": "^4.0.1",
+    "koa-passport": "^4.1.0",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.10",
     "mongoose": "^5.1.1",
@@ -49,7 +49,7 @@
     "husky": "^0.14.3",
     "mocha": "^5.1.1",
     "nodemon": "^1.17.4",
-    "nyc": "^11.7.3",
+    "nyc": "^11.8.0",
     "portfinder": "^1.0.13",
     "supertest": "^3.1.0"
   },
