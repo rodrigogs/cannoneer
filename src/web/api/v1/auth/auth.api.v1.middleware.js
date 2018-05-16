@@ -11,8 +11,6 @@ PassportConfig.initializeBearerStrategy('bearer', {}, async (token, done) => {
     done(null, null);
   }
 
-  debug(`authorizing token "${token}"`);
-
   try {
     const userToken = await AuthService.authorize(token);
     done(null, userToken);
