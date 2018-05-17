@@ -3,7 +3,7 @@ const debug = require('debuggler')();
 
 debug('configuring workers');
 
-const MessageProcessor = require('./processors/message');
+const MessageProcessor = require('./message');
 
 const workers = [];
 

@@ -1,7 +1,7 @@
 const debug = require('debuggler')();
-const redis = require('../../../../config/redis');
-const logger = require('../../../../config/logger');
-const MessageService = require('../../../web/api/v1/message/message.api.v1.service');
+const redis = require('../../../config/redis');
+const logger = require('../../../config/logger');
+const MessageService = require('../../web/api/v1/message/message.api.v1.service');
 
 const ONE_MINUTE = 60 * 1000;
 
@@ -11,7 +11,7 @@ const normalizeWorker = (worker) => {
   return worker;
 };
 
-const MessageProcessorService = {
+const MessageWorkerService = {
   /**
    * status: ['alive', 'dead']
    *
@@ -24,7 +24,7 @@ const MessageProcessorService = {
   },
 
   getWorkerKeyById: async (id) => {
-    const keyPattern = MessageProcessorService.getWorkerKey({ id });
+    const keyPattern = MessageWorkerService.getWorkerKey({ id });
     const [key] = await redis.keysAsync(keyPattern);
 
     return key;
@@ -33,7 +33,7 @@ const MessageProcessorService = {
   getAllWorkers: () => {
     debug('retrieving all workers');
     return redis
-      .keysAsync(MessageProcessorService.getWorkerKey())
+      .keysAsync(MessageWorkerService.getWorkerKey())
       .map(key => redis.getAsync(key))
       .map(normalizeWorker);
   },
@@ -41,14 +41,14 @@ const MessageProcessorService = {
   getDeadWorkers: () => {
     debug('retrieving dead workers');
     return redis
-      .keysAsync(MessageProcessorService.getWorkerKey({ status: 'dead' }))
+      .keysAsync(MessageWorkerService.getWorkerKey({ status: 'dead' }))
       .map(key => redis.getAsync(key))
       .map(normalizeWorker);
   },
 
   findDeadWorker: async () => {
     debug('looking for dead workers');
-    let deadWorkers = await MessageProcessorService.getDeadWorkers();
+    let deadWorkers = await MessageWorkerService.getDeadWorkers();
 
     if (deadWorkers.length) {
       debug(`${deadWorkers.length} dead workers found`);
@@ -58,8 +58,8 @@ const MessageProcessorService = {
     }
 
     debug('no dead workers found, assuming keep alive strategy');
-    deadWorkers = await MessageProcessorService.getAllWorkers()
-      .filter(MessageProcessorService.isWorkerDead);
+    deadWorkers = await MessageWorkerService.getAllWorkers()
+      .filter(MessageWorkerService.isWorkerDead);
 
     if (deadWorkers.length) {
       debug(`${deadWorkers.length} dead workers found through keep alive strategy`);
@@ -84,21 +84,21 @@ const MessageProcessorService = {
    */
   claimWorker: async (id, timeout = 30000) => {
     const [originalKey] = await redis
-      .keysAsync(MessageProcessorService.getWorkerKey({ id }));
+      .keysAsync(MessageWorkerService.getWorkerKey({ id }));
 
-    const claimingKey = MessageProcessorService.getWorkerKey({
+    const claimingKey = MessageWorkerService.getWorkerKey({
       id,
       status: 'claiming',
     });
 
-    const newKey = MessageProcessorService.getWorkerKey({
+    const newKey = MessageWorkerService.getWorkerKey({
       id,
       status: 'alive',
     });
 
     redis.renameAsync(originalKey, claimingKey);
 
-    const timeSalt = Math.floor(Math.random() * 15000) + 5000;
+    const timeSalt = Math.floor(Math.random() * 10000) + 5000;
     await Promise.delay(timeout + timeSalt);
 
     if (!await redis.getAsync(claimingKey)) {
@@ -113,7 +113,7 @@ const MessageProcessorService = {
   },
 
   isWorkerDead: (worker) => {
-    return MessageProcessorService.notSeenFor(worker.lastSeen, ONE_MINUTE * 2);
+    return MessageWorkerService.notSeenFor(worker.lastSeen, ONE_MINUTE * 2);
   },
 
   /**
@@ -133,7 +133,7 @@ const MessageProcessorService = {
 
       await Promise.delay(retryIn);
 
-      return MessageProcessorService.removeFromMemory(key, attempt + 1);
+      return MessageWorkerService.removeFromMemory(key, attempt + 1);
     }
   },
 
@@ -166,7 +166,7 @@ const MessageProcessorService = {
    * @return {Promise<void>}
    */
   processMessages: async (workerId, cursor = 0) => {
-    const { cursor: next, messages: page } = await MessageProcessorService
+    const { cursor: next, messages: page } = await MessageWorkerService
       .getPaginatedMessages(workerId, cursor);
 
     try {
@@ -181,17 +181,17 @@ const MessageProcessorService = {
           debug(`delivering message "${id}" using worker "${workerId}"`);
 
           await MessageService.deliverMessage(id, url, message);
-          await MessageProcessorService.removeFromMemory(key);
+          await MessageWorkerService.removeFromMemory(key);
         } catch (err) {
           logger.error(`Failed to deliver message "${id}" with error:`, err.message);
         }
       });
     } finally {
       if (next !== '0') {
-        await MessageProcessorService.processMessages(workerId, next);
+        await MessageWorkerService.processMessages(workerId, next);
       }
     }
   },
 };
 
-module.exports = MessageProcessorService;
+module.exports = MessageWorkerService;

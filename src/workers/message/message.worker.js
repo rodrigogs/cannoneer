@@ -1,14 +1,14 @@
 const debug = require('debuggler')();
-const Env = require('../../../../config/env');
+const Env = require('../../../config/env');
 const { CronJob } = require('cron');
-const redis = require('../../../../config/redis');
-const logger = require('../../../../config/logger');
-const MessageProcessorService = require('./message.processor.service');
+const redis = require('../../../config/redis');
+const logger = require('../../../config/logger');
+const MessageProcessorService = require('./message.worker.service');
 
 /**
  * @module MessageProcessorWorker
  */
-const MessageProcessorWorker = {
+const MessageWorker = {
   name: 'MessageWorker',
 
   id: null,
@@ -21,48 +21,48 @@ const MessageProcessorWorker = {
    * @return {Promise<void>}
    */
   run: async () => {
-    if (MessageProcessorWorker.running) return debug('worker is busy');
+    if (MessageWorker.running) return debug('worker is busy');
 
     debug('worker running');
 
-    MessageProcessorWorker.running = true;
+    MessageWorker.running = true;
 
     try {
       debug('processing messages');
-      await MessageProcessorService.processMessages(MessageProcessorWorker.id);
+      await MessageProcessorService.processMessages(MessageWorker.id);
     } catch (err) {
       logger.error(err);
     } finally {
-      MessageProcessorWorker.running = false;
+      MessageWorker.running = false;
       debug('worker halt');
     }
   },
 
   kill: async (retries = 0) => {
-    debug(`killing worker "${MessageProcessorWorker.id}" `);
+    debug(`killing worker "${MessageWorker.id}" `);
 
-    if (MessageProcessorWorker.running && retries < 60) {
-      debug(`worker "${MessageProcessorWorker.id}" is busy, waiting for work completion`);
+    if (MessageWorker.running && retries < 60) {
+      debug(`worker "${MessageWorker.id}" is busy, waiting for work completion`);
 
       await Promise.delay(1000);
-      return MessageProcessorWorker.kill(retries + 1);
+      return MessageWorker.kill(retries + 1);
     }
 
     try {
       const oldKey = MessageProcessorService.getWorkerKey({
-        id: MessageProcessorWorker.id,
+        id: MessageWorker.id,
         status: 'alive',
       });
 
       const newKey = MessageProcessorService.getWorkerKey({
-        id: MessageProcessorWorker.id,
+        id: MessageWorker.id,
         status: 'dead',
       });
 
-      debug(`changing worker ${MessageProcessorWorker.id} status to "dead"`);
+      debug(`changing worker ${MessageWorker.id} status to "dead"`);
       await redis.renameAsync(oldKey, newKey);
     } catch (err) {
-      debug(`failed to change worker ${MessageProcessorWorker.id} status to "dead": ${err.meesage}`);
+      debug(`failed to change worker ${MessageWorker.id} status to "dead": ${err.meesage}`);
       process.exit(1);
     } finally {
       process.exit(0);
@@ -73,20 +73,20 @@ const MessageProcessorWorker = {
    * @return {Promise<*|Promise<*>>}
    */
   keepAlive: async () => {
-    if (MessageProcessorWorker.lastSeen) {
-      if (MessageProcessorService.isWorkerDead(MessageProcessorWorker)) {
-        debug(`not seen for more then 2 minutes, killing worker ${MessageProcessorWorker.id}`);
-        return MessageProcessorWorker.kill();
+    if (MessageWorker.lastSeen) {
+      if (MessageProcessorService.isWorkerDead(MessageWorker)) {
+        debug(`not seen for more then 2 minutes, killing worker ${MessageWorker.id}`);
+        return MessageWorker.kill();
       }
     }
 
     try {
       const workerInfo = {
-        id: MessageProcessorWorker.id || Env.INSTANCE_ID,
+        id: MessageWorker.id || Env.INSTANCE_ID,
         lastSeen: new Date(),
       };
 
-      MessageProcessorWorker.id = workerInfo.id;
+      MessageWorker.id = workerInfo.id;
 
       debug(`executing keep alive for worker "${workerInfo.id}"`);
 
@@ -95,7 +95,7 @@ const MessageProcessorWorker = {
         status: 'alive',
       }), JSON.stringify(workerInfo));
 
-      MessageProcessorWorker.lastSeen = workerInfo.lastSeen;
+      MessageWorker.lastSeen = workerInfo.lastSeen;
 
       debug(`successfully executed keep alive for worker "${workerInfo.id}"`);
 
@@ -103,12 +103,12 @@ const MessageProcessorWorker = {
     } catch (err) {
       logger.error('Error executing keep alive routine', err);
     } finally {
-      await MessageProcessorWorker.keepAlive();
+      await MessageWorker.keepAlive();
     }
   },
 };
 
-exports.worker = MessageProcessorWorker;
+exports.worker = MessageWorker;
 
 /**
  * @param {String} cronPattern
@@ -116,7 +116,7 @@ exports.worker = MessageProcessorWorker;
  */
 exports.schedule = cronPattern => new CronJob({
   cronTime: cronPattern,
-  onTick: MessageProcessorWorker.run,
+  onTick: MessageWorker.run,
   start: false,
 });
 
@@ -124,7 +124,7 @@ exports.schedule = cronPattern => new CronJob({
  * @return {Promise<void>}
  */
 exports.setup = async () => {
-  const startupDelay = Math.floor(Math.random() * 15000) + 5000;
+  const startupDelay = Math.floor(Math.random() * 5000) + 1000;
 
   debug(`delaying ${startupDelay} millis...`);
   await Promise.delay(startupDelay);
@@ -155,7 +155,7 @@ exports.setup = async () => {
       logger.info(`Claiming dead worker "${deadWorker.id}"`);
       await MessageProcessorService.claimWorker(deadWorker.id);
       logger.info(`Successfully claimed worker "${deadWorker.id}"`);
-      MessageProcessorWorker.id = deadWorker.id;
+      MessageWorker.id = deadWorker.id;
     } catch (err) {
       logger.error(`Failed claiming dead worker "${deadWorker.id}"`, err);
       return exports.setup();
@@ -164,17 +164,17 @@ exports.setup = async () => {
 
   if (Env.MESSAGE_PROCESSOR_LIFETIME) {
     debug(`programming worker to die after "${Env.MESSAGE_PROCESSOR_LIFETIME}" millis`);
-    setTimeout(MessageProcessorWorker.kill, Env.MESSAGE_PROCESSOR_LIFETIME);
+    setTimeout(MessageWorker.kill, Env.MESSAGE_PROCESSOR_LIFETIME);
   }
 
   debug('starting keep alive routine');
-  MessageProcessorWorker.keepAlive()
-    .then(() => debug(`worker "${MessageProcessorWorker.id}" keep alive routine stopped`))
+  MessageWorker.keepAlive()
+    .then(() => debug(`worker "${MessageWorker.id}" keep alive routine stopped`))
     .catch(logger.error);
 };
 
 process.on('SIGINT', () => {
-  debug(`termination routine triggered for worker "${MessageProcessorWorker.id}"`);
+  debug(`termination routine triggered for worker "${MessageWorker.id}"`);
 
-  MessageProcessorWorker.kill();
+  MessageWorker.kill();
 });

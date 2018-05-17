@@ -1,8 +1,7 @@
 const debug = require('debuggler')();
 const Router = require('koa-router');
+const Env = require('../../../../config/env');
 const AuthMiddleware = require('./auth/auth.api.v1.middleware');
-// const ApiSchema = require('./api.v1.schema');
-// const graphqlHTTP = require('koa-graphql');
 
 const router = new Router();
 
@@ -14,11 +13,7 @@ const MessageRouter = require('./message');
 
 router.use('/auth', AuthRouter.routes(), AuthRouter.allowedMethods());
 
-// router.all('/graphql', graphqlHTTP({
-//   schema: ApiSchema,
-//   graphiql: true,
-// }));
-
+// Ensure authentication for the following routes
 router.use(AuthMiddleware.authenticate());
 
 router.use(

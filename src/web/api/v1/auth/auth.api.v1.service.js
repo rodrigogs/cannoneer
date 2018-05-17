@@ -35,7 +35,7 @@ const resolveUserToken = async (token) => {
   let userToken = await redis.getAsync(`user:token:${token}`).then(JSON.parse);
   if (!userToken) {
     userToken = await UserTokenService.get(token);
-    if (userToken) await redis.setAsync(`user:token:${token}`, JSON.stringify(userToken));
+    if (userToken) await redis.setAsync(`user:token:${token}`, JSON.stringify(userToken.toObject()));
   }
 
   return userToken;

@@ -6,11 +6,6 @@ const UnauthorizedError = require('./exceptions/UnauthorizedError');
 const passport = require('koa-passport');
 
 PassportConfig.initializeBearerStrategy('bearer', {}, async (token, done) => {
-  if (!Env.AUTH_ENABLED) {
-    debug('authentication is disabled');
-    done(null, null);
-  }
-
   try {
     const userToken = await AuthService.authorize(token);
     done(null, userToken);
@@ -30,7 +25,11 @@ const AuthMiddleware = {
   /**
    * @return {*}
    */
-  authenticate: () => passport.authenticate('bearer', { session: false }),
+  authenticate: () => {
+    if (!Env.AUTH_ENABLED) return (ctx, next) => next();
+
+    return passport.authenticate('bearer', { session: false });
+  },
 
   /**
    * @param {String} scope
@@ -39,18 +38,20 @@ const AuthMiddleware = {
   grant: (scope) => {
     if (!scope) throw new Error('Scope must be specified.');
 
+    if (!Env.AUTH_ENABLED) return (ctx, next) => next();
+
     return async (ctx, next) => {
       debug(`verifying if authenticated user has grant "${scope}"`);
 
-      if (ctx.isAuthenticated()) {
-        const type = getMethodType(ctx.method);
-        if (scope) await AuthService.ensureScopeAccess(ctx.state.user.token, scope, type);
-
-        return next();
+      if (!ctx.isAuthenticated()) {
+        debug('session is not authenticated');
+        throw new UnauthorizedError();
       }
 
-      debug('session is not authenticated');
-      throw new UnauthorizedError();
+      const type = getMethodType(ctx.method);
+      if (scope) await AuthService.ensureScopeAccess(ctx.state.user.token, scope, type);
+
+      return next();
     };
   },
 };
