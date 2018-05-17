@@ -1,6 +1,5 @@
 const debug = require('debuggler')();
 const Router = require('koa-router');
-const Env = require('../../../../config/env');
 const AuthMiddleware = require('./auth/auth.api.v1.middleware');
 
 const router = new Router();
