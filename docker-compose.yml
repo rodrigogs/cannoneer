@@ -1,6 +1,26 @@
-web:
+version: '3.6'
+
+x-defaults: &defaults
   build: .
   volumes:
     - ".:/src/app"
-  ports:
-    - "3000:3000"
+  env_file:
+    - .env
+
+services:
+  web:
+    <<: *defaults
+    environment:
+      - CONTEXTS=web
+      - AUTH_ENABLED=true
+      - DEBUG=cannoneer:*
+    ports:
+      - "3000:3000"
+
+  message-worker:
+    <<: *defaults
+    environment:
+      - CONTEXTS=message-worker
+      - MESSAGE_PROCESSOR_CRON=* * * * *
+      - MESSAGE_PROCESSOR_LIFETIME=100000
+      - DEBUG=cannoneer:*

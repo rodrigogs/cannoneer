@@ -6,6 +6,8 @@ const MessageService = require('../../web/api/v1/message/message.api.v1.service'
 const ONE_MINUTE = 60 * 1000;
 
 const normalizeWorker = (worker) => {
+  if (!worker) return null;
+
   worker = JSON.parse(worker);
   worker.lastSeen = new Date(worker.lastSeen);
   return worker;
@@ -35,7 +37,8 @@ const MessageWorkerService = {
     return redis
       .keysAsync(MessageWorkerService.getWorkerKey())
       .map(key => redis.getAsync(key))
-      .map(normalizeWorker);
+      .map(normalizeWorker)
+      .filter(w => !!w);
   },
 
   getDeadWorkers: () => {
@@ -43,7 +46,8 @@ const MessageWorkerService = {
     return redis
       .keysAsync(MessageWorkerService.getWorkerKey({ status: 'dead' }))
       .map(key => redis.getAsync(key))
-      .map(normalizeWorker);
+      .map(normalizeWorker)
+      .filter(w => !!w);
   },
 
   findDeadWorker: async () => {

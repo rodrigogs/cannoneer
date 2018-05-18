@@ -40,13 +40,13 @@ Development
 -----------
 * nodemon
   ```bash
-  $ yarn start
+  $ npm start
   ```
 * debug
   ```bash
   $ node --inspect=${DEBUG_PORT} ./bin/www
   ```
-  
+
 Production
 ----------
 * docker
