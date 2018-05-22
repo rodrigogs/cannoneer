@@ -35,7 +35,10 @@ const resolveUserToken = async (token) => {
   let userToken = await redis.getAsync(`user:token:${token}`).then(JSON.parse);
   if (!userToken) {
     userToken = await UserTokenService.get(token);
-    if (userToken) await redis.setAsync(`user:token:${token}`, JSON.stringify(userToken.toObject()));
+    if (userToken) {
+      const json = JSON.stringify(userToken.toObject());
+      await redis.setAsync(`user:token:${token}`, json, 'PX', userToken.token.duration);
+    }
   }
 
   return userToken;
@@ -48,7 +51,7 @@ const AuthService = {
    * @param {String[]} scopes
    * @return {Promise<UserToken>}
    */
-  authenticate: async (username, password, scopes) => {
+  authenticateJwt: async (username, password, scopes) => {
     if (!username) throw new BadRequestError('Username is required');
     if (!password) throw new BadRequestError('Password is required');
 
@@ -57,6 +60,16 @@ const AuthService = {
     if (!user.comparePassword(password)) throw new BadCredentialsError();
 
     return UserTokenService.create(user, scopes);
+  },
+
+  /**
+   * @param {String} refreshToken
+   * @return {Promise<UserToken>}
+   */
+  refreshJwt: async (refreshToken) => {
+    if (!refreshToken) throw new BadRequestError('Refresh token is required');
+
+    return UserTokenService.refresh(refreshToken);
   },
 
   /**

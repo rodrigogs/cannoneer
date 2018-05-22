@@ -7,7 +7,11 @@ const TokenSchema = {
       type: 'string',
       required: true,
     },
-    hash: {
+    accessToken: {
+      type: 'string',
+      required: true,
+    },
+    refreshToken: {
       type: 'string',
       required: true,
     },

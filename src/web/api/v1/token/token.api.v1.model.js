@@ -17,7 +17,12 @@ const scopeTypes = scopes.reduce((result, scope) => {
 const isValidScope = scope => scopeTypes.indexOf(scope) !== -1;
 
 const TokenModel = new Schema({
-  hash: {
+  accessToken: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  refreshToken: {
     type: String,
     required: true,
     unique: true,

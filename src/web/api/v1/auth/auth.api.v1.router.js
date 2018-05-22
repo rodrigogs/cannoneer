@@ -6,6 +6,7 @@ const router = new Router();
 
 debug('configuring routes');
 
-router.post('/', AuthController.authenticate);
+router.post('/jwt', AuthController.jwt);
+router.post('/jwt/refresh', AuthController.refreshJwt);
 
 module.exports = router;

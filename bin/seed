@@ -32,5 +32,11 @@ const execute = async () => {
 };
 
 execute()
-  .then(() => logger.info('Done!'))
-  .catch(logger.error);
+  .then(() => {
+    logger.info('Done!');
+    process.exit(0);
+  })
+  .catch((err) => {
+    logger.error(err);
+    process.exit(1);
+  });
