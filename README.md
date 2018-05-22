@@ -46,12 +46,14 @@ Development
   ```bash
   $ node --inspect=${DEBUG_PORT} ./bin/www
   ```
+* docker
+
 
 Production
 ----------
 * docker
   ```bash
-    $ docker-compose up .
+    $ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
   ```
 * pm2
   ```bash

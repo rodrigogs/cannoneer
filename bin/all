@@ -1,4 +1,11 @@
 #!/usr/bin/env node
 
-require('./www');
-require('./workers');
+const _ = require('lodash');
+const Env = require('../config/env');
+
+const contexts = Env.CONTEXTS.split(',');
+
+const hasContext = context => _.includes(contexts, context) || Env.CONTEXTS === 'all';
+
+if (hasContext('web')) require('./www');
+if (hasContext('message-worker')) require('./workers');

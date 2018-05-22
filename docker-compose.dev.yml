@@ -1,0 +1,23 @@
+version: '3.6'
+
+services:
+  web:
+    environment:
+      - CONTEXTS=web
+      - DEBUG=cannoneer:*
+    ports:
+      - 3000:3000
+      - 9229:9229
+    entrypoint:
+      - npm
+      - start
+
+  message-worker:
+    environment:
+      - CONTEXTS=message-worker
+      - DEBUG=cannoneer:*
+    ports:
+      - 9230:9229
+    entrypoint:
+      - npm
+      - start
