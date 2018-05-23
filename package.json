@@ -5,10 +5,11 @@
     "start": "nodemon --inspect-brk ./bin/all",
     "eslint": "eslint . --ext .js",
     "test": "npm run test:unit && npm run test:integration",
+    "coverage": "nyc --reporter=html --reporter=lcov npm test",
     "test:unit": "cross-env NODE_ENV=test mocha --exit \"src/**/*.spec.unit.js\" --require config",
     "test:integration": "cross-env NODE_ENV=test mocha --exit \"src/**/*.spec.integration.js\" --require config",
-    "coverage": "nyc --reporter=html --reporter=lcov npm test",
-    "seed": "node bin/seed",
+    "docker:start": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
+    "create:seed": "node bin/seed",
     "create:env-file": "node bin/create-env-file"
   },
   "dependencies": {
