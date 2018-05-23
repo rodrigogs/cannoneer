@@ -8,7 +8,10 @@
     "coverage": "nyc --reporter=html --reporter=lcov npm test",
     "test:unit": "cross-env NODE_ENV=test mocha --exit \"src/**/*.spec.unit.js\" --require config",
     "test:integration": "cross-env NODE_ENV=test mocha --exit \"src/**/*.spec.integration.js\" --require config",
-    "docker:start": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
+    "docker:start": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build",
+    "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --entrypoint npm run test --build",
+    "docker:test:unit": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
+    "docker:test:integration": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
     "create:seed": "node bin/seed",
     "create:env-file": "node bin/create-env-file"
   },

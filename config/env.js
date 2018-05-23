@@ -87,10 +87,10 @@ class Env {
    * @default 1
    * @return {Number}
    */
-  static get SERVER_CORES() {
-    return Number.isNaN(process.env.SERVER_CORES)
+  static get SERVER_INSTANCES() {
+    return Number.isNaN(process.env.SERVER_INSTANCES)
       ? 0
-      : Number(process.env.SERVER_CORES);
+      : Number(process.env.SERVER_INSTANCES);
   }
 
   /**
@@ -104,10 +104,10 @@ class Env {
    * @default 1
    * @return {Number}
    */
-  static get MESSAGE_PROCESSOR_CORES() {
-    return Number.isNaN(process.env.MESSAGE_PROCESSOR_CORES)
+  static get MESSAGE_PROCESSOR_INSTANCES() {
+    return Number.isNaN(process.env.MESSAGE_PROCESSOR_INSTANCES)
       ? 0
-      : Number(process.env.MESSAGE_PROCESSOR_CORES);
+      : Number(process.env.MESSAGE_PROCESSOR_INSTANCES);
   }
 
   /**
