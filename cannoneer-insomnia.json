@@ -1,0 +1,220 @@
+{
+	"_type": "export",
+	"__export_format": 3,
+	"__export_date": "2018-05-22T17:55:12.831Z",
+	"__export_source": "insomnia.desktop.app:v5.16.2",
+	"resources": [
+		{
+			"_id": "wrk_0a3bcd50778f44b2818289455e8e20da",
+			"created": 1525893789593,
+			"description": "",
+			"modified": 1527011280556,
+			"name": "cannoneer",
+			"parentId": null,
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_d68fb12c29854d1e9367fc1ddb6b37e1",
+			"color": null,
+			"created": 1525893789624,
+			"data": {},
+			"isPrivate": false,
+			"modified": 1525894155648,
+			"name": "New Environment",
+			"parentId": "wrk_0a3bcd50778f44b2818289455e8e20da",
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_47b34b53b37e44a392808d091639ffe8",
+			"cookies": [],
+			"created": 1525893789676,
+			"modified": 1525893789676,
+			"name": "Default Jar",
+			"parentId": "wrk_0a3bcd50778f44b2818289455e8e20da",
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "fld_52e36f37e4014300bbda83f1ad9e0052",
+			"created": 1525893903427,
+			"description": "",
+			"environment": {
+				"PATH": "http://localhost:3000/"
+			},
+			"metaSortKey": -1525893873857,
+			"modified": 1527011299316,
+			"name": "api",
+			"parentId": "wrk_0a3bcd50778f44b2818289455e8e20da",
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_509d800f09d94dc2b1ba9f186271064e",
+			"authentication": {},
+			"body": {},
+			"created": 1526328700030,
+			"description": "",
+			"headers": [],
+			"isPrivate": false,
+			"metaSortKey": -1525893873882,
+			"method": "GET",
+			"modified": 1527011296919,
+			"name": "status",
+			"parameters": [],
+			"parentId": "wrk_0a3bcd50778f44b2818289455e8e20da",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ URL  }}/",
+			"_type": "request"
+		},
+		{
+			"_id": "env_cd7883fe0538492eada5be123020dbed",
+			"color": null,
+			"created": 1525894054985,
+			"data": {
+				"URL": "http://localhost:3000"
+			},
+			"isPrivate": false,
+			"modified": 1525894165160,
+			"name": "cannonner-dev",
+			"parentId": "env_d68fb12c29854d1e9367fc1ddb6b37e1",
+			"_type": "environment"
+		},
+		{
+			"_id": "fld_5cbe9f78c831472ea1f9aa942b19c959",
+			"created": 1525893898734,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1525893885024,
+			"modified": 1525894185805,
+			"name": "v1",
+			"parentId": "fld_52e36f37e4014300bbda83f1ad9e0052",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_26219f648b2448b2bc733269cc72885c",
+			"created": 1525893884974,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1525893919545,
+			"modified": 1525894188010,
+			"name": "message",
+			"parentId": "fld_5cbe9f78c831472ea1f9aa942b19c959",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_5c319cc1e37049d3b67f66a59cd90608",
+			"created": 1525894670375,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1525894670375,
+			"modified": 1525894670375,
+			"name": "auth",
+			"parentId": "fld_5cbe9f78c831472ea1f9aa942b19c959",
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_cd7f990b79f0427aabe41f46e0c5a49f",
+			"authentication": {
+				"token": "{% response 'body', 'req_9c1111b0b2424caa9d1fdd9b4a80825f', '$.token.accessToken' %}",
+				"type": "bearer"
+			},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"destinations\": [\n\t\t\"https://test-whatever-teta.herokuapp.com/\"\n\t],\n\t\"method\": \"POST\",\n\t\"payload\": {\n\t\t\"test\": \"test\"\n\t},\n\t\"expected\": {\n\t\t\"status\": 200,\n\t\t\"body\": {\n\t\t\t\"test\": \"test\"\n\t\t}\n\t}\n}\n"
+			},
+			"created": 1525893919495,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_8fca21b1c54843df863262e5a0e4649b",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1525893919495,
+			"method": "POST",
+			"modified": 1527011575986,
+			"name": "send",
+			"parameters": [],
+			"parentId": "fld_26219f648b2448b2bc733269cc72885c",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ URL  }}/api/v1/message/",
+			"_type": "request"
+		},
+		{
+			"_id": "req_9c1111b0b2424caa9d1fdd9b4a80825f",
+			"authentication": {
+				"token": "",
+				"type": "bearer"
+			},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"username\": \"admin\",\n\t\"password\": \"admin\",\n\t\"scopes\": [\"admin:admin\"]\n}\n"
+			},
+			"created": 1525894687363,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_265b5c3899bd4f43aba1e6b465159816",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1525894687363,
+			"method": "POST",
+			"modified": 1526937027944,
+			"name": "jwt",
+			"parameters": [],
+			"parentId": "fld_5c319cc1e37049d3b67f66a59cd90608",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ URL  }}/api/v1/auth/jwt",
+			"_type": "request"
+		},
+		{
+			"_id": "req_654991ff99114700ae1302c92a0761e3",
+			"authentication": {
+				"token": "",
+				"type": "bearer"
+			},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"refreshToken\": \"{% response 'body', 'req_9c1111b0b2424caa9d1fdd9b4a80825f', '$.token.refreshToken' %}\"\n}\n"
+			},
+			"created": 1526937041044,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_265b5c3899bd4f43aba1e6b465159816",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1525894303429,
+			"method": "POST",
+			"modified": 1527010605250,
+			"name": "jwt/refresh",
+			"parameters": [],
+			"parentId": "fld_5c319cc1e37049d3b67f66a59cd90608",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ URL  }}/api/v1/auth/jwt/refresh",
+			"_type": "request"
+		}
+	]
+}

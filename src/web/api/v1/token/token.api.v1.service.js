@@ -3,16 +3,21 @@ const Token = require('./token.api.v1.model');
 const InactiveTokenError = require('./exceptions/InactiveTokenError');
 const ExpiredTokenError = require('./exceptions/ExpiredTokenError');
 const uuidv4 = require('uuid/v4');
+const _ = require('lodash');
 
 const TokenService = {
   /**
-   * @param {String} hash
+   * @param {String} token
    * @return {Promise<Token>}
    */
-  get: async (hash) => {
-    debug(`retrieving token for hash "${hash}"`);
+  get: async (token) => {
+    if (_.isObject(token)) {
+      token = token.accessToken;
+    }
 
-    return Token.findOne({ hash }).exec();
+    debug(`retrieving token for hash "${token}"`);
+
+    return Token.findOne({ accessToken: token }).exec();
   },
 
   /**
@@ -21,8 +26,19 @@ const TokenService = {
    * @return {Promise<Token>}
    */
   create: async (salt, scopes) => {
-    const hash = uuidv4(256);
-    return new Token({ hash: hash + salt, scopes }).save();
+    const accessToken = uuidv4(256) + salt;
+    const refreshToken = uuidv4(256) + salt;
+    return new Token({ accessToken, refreshToken, scopes }).save();
+  },
+
+  refresh: async (refreshToken) => {
+    const token = await Token.findOne({ refreshToken }).exec();
+    if (!token.active) throw new InactiveTokenError(token.accessToken);
+
+    token.accessToken = uuidv4(256) + token._id;
+    await token.save();
+
+    return token;
   },
 
   /**
@@ -33,8 +49,8 @@ const TokenService = {
     const createdAt = new Date(token.createdAt);
     const isExipired = (new Date().getTime() - createdAt.getTime()) > token.duration;
 
-    if (isExipired) throw new ExpiredTokenError(token.hash);
-    if (!token.active) throw new InactiveTokenError(token.hash);
+    if (isExipired) throw new ExpiredTokenError(token.accessToken);
+    if (!token.active) throw new InactiveTokenError(token.accessToken);
   },
 };
 

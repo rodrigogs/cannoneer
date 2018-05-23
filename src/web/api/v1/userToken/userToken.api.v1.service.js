@@ -36,6 +36,15 @@ const UserTokenService = {
     const token = await TokenService.create(user._id, scopes);
     return new UserToken({ user, token }).save();
   },
+
+  /**
+   * @param {String} refreshToken
+   * @return {Promise<UserToken>}
+   */
+  refresh: async (refreshToken) => {
+    const token = await TokenService.refresh(refreshToken);
+    return UserTokenService.get(token);
+  },
 };
 
 module.exports = UserTokenService;

@@ -8,11 +8,20 @@ const UserTokenNormalizer = JSONUtils.normalize(UserTokenSchema);
 const AuthController = {
   /**
    */
-  authenticate: async (ctx) => {
-    debug('authenticating...');
+  jwt: async (ctx) => {
+    debug('authenticating with jwt...');
     const { username, password, scopes } = ctx.request.body;
 
-    const userToken = await AuthService.authenticate(username, password, scopes);
+    const userToken = await AuthService.authenticateJwt(username, password, scopes);
+    ctx.status = 200;
+    ctx.body = UserTokenNormalizer(userToken.toObject());
+  },
+
+  refreshJwt: async (ctx) => {
+    debug('refreshing token for jwt...');
+    const { refreshToken } = ctx.request.body;
+
+    const userToken = await AuthService.refreshJwt(refreshToken);
     ctx.status = 200;
     ctx.body = UserTokenNormalizer(userToken.toObject());
   },
